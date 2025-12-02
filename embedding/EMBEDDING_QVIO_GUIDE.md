@@ -248,7 +248,11 @@ WordPress has security restrictions that may block or strip iframe content. This
 1. In the block editor, click **+** to add a new block
 2. Search for and select **Custom HTML**
 3. Paste your iframe code
-4. Preview to verify it works
+4. Click **Preview** to verify it renders correctly
+
+> **Note:** On WordPress.com (hosted) sites with Personal plans, iframes may be stripped. This method works best on self-hosted WordPress or Business/eCommerce plans.
+
+*[WordPress Custom HTML Block Guide](https://gogutenberg.com/blocks/custom-html/)*
 
 #### Option 2: Embed Shortcode
 
@@ -297,13 +301,15 @@ Then use in posts/pages:
 [qvio id="jsUW-0csSje-4Yy9MRtRWw" autoplay="true"]
 ```
 
+*[WordPress Shortcode API](https://developer.wordpress.org/plugins/shortcodes/)*
+
 #### Option 3: Iframe Whitelist Plugin
 
 **Why this works:** These plugins modify WordPress's HTML filtering to explicitly allow iframe tags from trusted domains, adding `qvio.hia.ai` to the allowed sources list.
 
 If iframes are being stripped:
 
-1. Install a plugin like **iframe** or **Advanced iFrame**
+1. Install a plugin like [**iframe**](https://wordpress.org/plugins/iframe/) or [**Advanced iFrame**](https://wordpress.org/plugins/advanced-iframe/)
 2. Configure it to allow iframes from `qvio.hia.ai`
 3. Use the plugin's shortcode or settings to embed
 
@@ -320,20 +326,49 @@ Header set Content-Security-Policy "frame-src 'self' https://qvio.hia.ai;"
 
 ### Squarespace
 
-1. Add a **Code Block** or **Embed Block**
-2. Paste the responsive iframe code (including the container div and styles)
-3. Switch to the page's **Page Settings > Advanced** and add the CSS
+> **Note:** Iframes in Code blocks require a **Business or Commerce plan**. They will not work on Personal plans.
+
+**Why this works:** Squarespace Code blocks allow raw HTML including iframes to render directly on your page.
+
+1. Navigate to the page where you want to add the video
+2. Click the **+** button to add a new block
+3. Select **Code** from the block options
+4. Paste your iframe code into the code editor
+5. Ensure the code is not reformatted when pasted
+
+**Troubleshooting:**
+- If the iframe doesn't display while signed in, check it in an incognito window — Squarespace may hide code blocks for security when logged in
+- Ensure your iframe URL uses HTTPS (not HTTP)
+
+*[Squarespace Embed Blocks Documentation](https://support.squarespace.com/hc/en-us/articles/206543617-Embed-blocks)*
 
 ### Wix
 
-1. Add an **HTML iframe** element from **Add > Embed > HTML iframe**
-2. Click "Enter Code" and paste the iframe HTML
-3. Resize the element to your desired dimensions
-4. Use Wix's built-in responsive settings for mobile
+**Why this works:** Wix provides an HTML iframe element that can embed external content or custom code directly on your page.
+
+1. Click **Add Elements** on the left side of the editor
+2. Click **Embed Code** → **Embed HTML**
+3. In the settings panel, select **Code** and paste your iframe HTML
+4. Resize the element to your desired dimensions
+
+**Important considerations:**
+- The embedded URL must use HTTPS — HTTP URLs will work in preview but not on your published site
+- Embedded iframes in Wix are not automatically responsive; replace `px` values with `100%` for width/height to prevent content cropping
+- Some sites block iframe embedding due to security policies
+
+*[Wix HTML iFrame Documentation](https://support.wix.com/en/article/wix-editor-embedding-a-site-or-a-widget)*
 
 ### Shopify
 
-In your Liquid template or page content:
+**Why this works:** Shopify Liquid templates support raw HTML including iframes. You can add them via Custom Liquid sections or directly in theme template files.
+
+**Option 1: Custom Liquid Section (Theme Editor)**
+1. In your Shopify admin, go to **Online Store** → **Themes** → **Customize**
+2. Add a **Custom Liquid** section where you want the video
+3. Paste the iframe code below
+
+**Option 2: Edit Theme Files**
+Add directly to your Liquid template (e.g., `page.liquid`, `product.liquid`):
 
 ```html
 <div
@@ -349,6 +384,8 @@ In your Liquid template or page content:
   ></iframe>
 </div>
 ```
+
+*[Shopify Custom Liquid Documentation](https://help.shopify.com/en/manual/online-store/themes/theme-structure/extend/add-custom-code)*
 
 ### React/Next.js
 
