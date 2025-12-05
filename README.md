@@ -20,6 +20,12 @@ Qvio is an AI-powered video platform that transforms how you create, manage, and
 |-------|-------------|
 | [Embedding Qvio Videos](./embedding/EMBEDDING_QVIO_GUIDE.md) | Complete guide for embedding Qvio videos into websites, including responsive design, platform-specific instructions (WordPress, React, Vue, etc.), and troubleshooting |
 
+### Sharing Guides
+
+| Guide | Description |
+|-------|-------------|
+| [Watch Page URL Parameters](./sharing/WATCH_PAGE_URL_PARAMETERS.md) | Complete reference for URL parameters when sharing Qvio video links, including start time, autoplay, playlists, and analytics tracking |
+
 ### User Guides
 
 | Guide | Description |
