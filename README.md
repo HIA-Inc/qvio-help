@@ -19,6 +19,7 @@ Qvio is an AI-powered video platform that transforms how you create, manage, and
 | Guide | Description |
 |-------|-------------|
 | [Embedding Qvio Videos](./embedding/EMBEDDING_QVIO_GUIDE.md) | Complete guide for embedding Qvio videos into websites, including responsive design, platform-specific instructions (WordPress, React, Vue, etc.), and troubleshooting |
+| [WordPress Plugin](./wordpress/WORDPRESS_PLUGIN_GUIDE.md) | Install and use the official Qvio Embed WP plugin with Gutenberg block and shortcode support |
 
 ### Sharing Guides
 
