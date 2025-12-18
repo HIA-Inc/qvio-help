@@ -1,6 +1,6 @@
-# Qvio Embed WP - WordPress Plugin
+# Qvio Embed - WordPress Plugin
 
-This guide explains how to install and use the official Qvio Embed WP plugin for WordPress. The plugin provides a native Gutenberg block and shortcode for embedding Qvio AI-powered interactive videos.
+This guide explains how to install and use the official Qvio Embed plugin for WordPress. The plugin provides a native Gutenberg block and shortcode for embedding Qvio AI-powered interactive videos.
 
 > **Note:** This plugin is currently in the WordPress.org marketplace approval process. Once approved, you'll be able to install it directly from the WordPress plugin directory. In the meantime, you can install it manually via zip upload.
 
@@ -45,17 +45,17 @@ Since the plugin is pending WordPress.org marketplace approval, install it manua
 
 1. **Download the plugin**
    - Go to the [Releases page](https://github.com/HIA-Inc/qvio-help/releases)
-   - Download `qvio-embed-wp.zip` from the latest release
+   - Download `qvio-embed.zip` from the latest release
 
 2. **Upload to WordPress**
    - In your WordPress admin, go to **Plugins** > **Add New**
    - Click **Upload Plugin** at the top of the page
-   - Click **Choose File** and select the `qvio-embed-wp.zip` file
+   - Click **Choose File** and select the `qvio-embed.zip` file
    - Click **Install Now**
 
 3. **Activate the plugin**
    - After installation completes, click **Activate Plugin**
-   - You'll see "Qvio Embed WP" in your installed plugins list
+   - You'll see "Qvio Embed" in your installed plugins list
 
 ### Method 2: Install from WordPress.org (Coming Soon)
 
@@ -63,7 +63,7 @@ Once approved, you'll be able to install directly:
 
 1. Go to **Plugins** > **Add New** in your WordPress admin
 2. Search for "Qvio Embed"
-3. Click **Install Now** on the Qvio Embed WP plugin
+3. Click **Install Now** on the Qvio Embed plugin
 4. Click **Activate**
 
 ---
@@ -226,7 +226,7 @@ You can use either the video ID or full URL with this plugin.
 - Ensure the video is set to Public or Unlisted (not Private)
 
 **Check plugin activation:**
-- Go to **Plugins** and verify Qvio Embed WP is activated
+- Go to **Plugins** and verify Qvio Embed is activated
 - Deactivate and reactivate if needed
 
 ### Block Not Appearing in Editor
@@ -250,9 +250,9 @@ The video will show a play button if autoplay is blocked.
 
 This error occurs when the zip file structure is incorrect:
 
-1. Ensure you downloaded the official `qvio-embed-wp.zip` file
+1. Ensure you downloaded the official `qvio-embed.zip` file
 2. Do not extract and re-zip the file yourself
-3. The zip must contain a `qvio-embed-wp/` folder as the root
+3. The zip must contain a `qvio-embed/` folder as the root
 
 ### Shortcode Shows as Text
 
