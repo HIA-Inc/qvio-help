@@ -1,15 +1,16 @@
 # Qvio Embed - WordPress Plugin
 
-This guide explains how to install and use the official Qvio Embed plugin for WordPress. The plugin provides a native Gutenberg block and shortcode for embedding Qvio AI-powered interactive videos.
+This guide explains how to install and use the official Qvio Embed plugin for WordPress. The plugin provides native Gutenberg blocks and shortcode for embedding Qvio AI-powered interactive videos.
 
-> **Note:** This plugin is currently in the WordPress.org marketplace approval process. Once approved, you'll be able to install it directly from the WordPress plugin directory. In the meantime, you can install it manually via zip upload.
+**Plugin URL:** [https://wordpress.org/plugins/qvio-embed/](https://wordpress.org/plugins/qvio-embed/)
 
 ## Table of Contents
 
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
-- [Using the Gutenberg Block](#using-the-gutenberg-block)
+- [Using the Qvio Video Block](#using-the-qvio-video-block)
+- [Using the Floating Button Block](#using-the-floating-button-block)
 - [Using the Shortcode](#using-the-shortcode)
 - [Configuration Options](#configuration-options)
 - [Finding Your Video ID](#finding-your-video-id)
@@ -20,12 +21,22 @@ This guide explains how to install and use the official Qvio Embed plugin for Wo
 
 ## Features
 
+### Qvio Video Block
 - **Gutenberg Block**: Native WordPress editor block with live preview
 - **Shortcode Support**: Works in Classic Editor, widgets, and anywhere shortcodes are supported
 - **Responsive Design**: Automatically adapts to container width
 - **Multiple Aspect Ratios**: 16:9, 4:3, 21:9, and 1:1 options
 - **Embed Types**: Standard video player or Q&A-only mode
 - **Autoplay Option**: Optional autoplay support (subject to browser policies)
+
+### Floating Button Block
+- **Floating Action Button**: A fixed-position button that opens video in a modal overlay
+- **Multiple Button Styles**: Circular icon, pill with text, or bare icon (no background)
+- **Custom Icons**: Choose from built-in dashicons or upload your own PNG/SVG image
+- **Flexible Positioning**: Place in any corner with custom offsets
+- **Modal Options**: Centered overlay or slide-in panels from left/right
+- **Customizable Colors**: Background, text, and hover colors
+- **Accessibility**: Full keyboard navigation and ARIA support
 
 ---
 
@@ -39,13 +50,22 @@ This guide explains how to install and use the official Qvio Embed plugin for Wo
 
 ## Installation
 
-### Method 1: Install via Zip Upload (Current Method)
+### Method 1: Install from WordPress.org (Recommended)
 
-Since the plugin is pending WordPress.org marketplace approval, install it manually:
+1. Go to **Plugins** > **Add New** in your WordPress admin
+2. Search for "Qvio Embed"
+3. Click **Install Now** on the Qvio Embed plugin
+4. Click **Activate**
+
+Or install directly from [https://wordpress.org/plugins/qvio-embed/](https://wordpress.org/plugins/qvio-embed/)
+
+### Method 2: Install via Zip Upload
+
+If you prefer manual installation or need a specific version:
 
 1. **Download the plugin**
-   - Go to the [Releases page](https://github.com/HIA-Inc/qvio-help/releases)
-   - Download `qvio-embed.zip` from the latest release
+   - Go to the [WordPress.org plugin page](https://wordpress.org/plugins/qvio-embed/)
+   - Click **Download** to get the latest `qvio-embed.zip`
 
 2. **Upload to WordPress**
    - In your WordPress admin, go to **Plugins** > **Add New**
@@ -57,20 +77,11 @@ Since the plugin is pending WordPress.org marketplace approval, install it manua
    - After installation completes, click **Activate Plugin**
    - You'll see "Qvio Embed" in your installed plugins list
 
-### Method 2: Install from WordPress.org (Coming Soon)
-
-Once approved, you'll be able to install directly:
-
-1. Go to **Plugins** > **Add New** in your WordPress admin
-2. Search for "Qvio Embed"
-3. Click **Install Now** on the Qvio Embed plugin
-4. Click **Activate**
-
 ---
 
-## Using the Gutenberg Block
+## Using the Qvio Video Block
 
-The Gutenberg block is the recommended way to embed Qvio videos in WordPress.
+The Qvio Video block is the recommended way to embed Qvio videos inline on your WordPress pages.
 
 ### Adding a Video
 
@@ -104,6 +115,109 @@ Once added, you'll see the block settings in the right sidebar:
 3. Set aspect ratio to 16:9
 4. Enable autoplay if desired
 5. Preview or publish your post
+
+---
+
+## Using the Floating Button Block
+
+The Floating Button block creates a fixed-position button that opens your Qvio video in a modal overlay. This is ideal for call-to-action buttons, help videos, or promotional content that should be accessible from anywhere on the page.
+
+### Adding a Floating Button
+
+1. **Open the block editor** on any post or page
+2. **Add a new block** by clicking the **+** button
+3. **Search for "Qvio"** in the block inserter
+4. **Select "Qvio Floating Button"** from the results
+5. **Enter your video ID** in the placeholder or sidebar settings
+
+### Block Settings
+
+The Floating Button has four settings panels in the sidebar:
+
+#### Video Settings
+
+| Setting | Description |
+|---------|-------------|
+| **Video ID or URL** | Enter your Qvio video ID or paste a full Qvio URL |
+| **Embed Type** | Select "Full Video Player" or "Q&A Only" |
+| **Autoplay on Open** | Start video automatically when modal opens |
+
+#### Button Appearance
+
+| Setting | Description |
+|---------|-------------|
+| **Button Style** | Choose from three styles (see below) |
+| **Button Icon** | Select a dashicon or upload a custom image (PNG, SVG, GIF, WebP) |
+| **Button Size / Icon Size** | Small, Medium, Large presets, or custom pixel size for bare style |
+| **Background Color** | Button background color (not applicable for bare style) |
+| **Icon/Text Color** | Color of the icon and label text |
+| **Hover Background** | Background color on mouse hover |
+
+##### Button Styles
+
+| Style | Description |
+|-------|-------------|
+| **Icon Only (Circular)** | A circular floating action button with just an icon |
+| **Icon + Text (Pill)** | A pill-shaped button with icon and text label |
+| **Bare Icon (No Background)** | Just the icon with no background, border, or shadow - supports custom sizing from 16px to 320px |
+
+#### Button Position
+
+| Setting | Description |
+|---------|-------------|
+| **Position** | Bottom Right, Bottom Left, Top Right, Top Left, or Custom |
+| **Horizontal Offset** | Distance from the edge (0-200px) |
+| **Vertical Offset** | Distance from the edge (0-200px) |
+| **Z-Index** | Stack order (higher values appear above other elements) |
+
+#### Modal Settings
+
+| Setting | Description |
+|---------|-------------|
+| **Modal Type** | Centered Overlay, Slide from Left, or Slide from Right |
+| **Modal Size** | Small, Medium, Large, or Custom dimensions |
+| **Custom Width/Height** | Pixel dimensions when using Custom size |
+| **Backdrop Opacity** | Darkness of the background overlay (0-1) |
+| **Show Close Button** | Display an X button to close the modal |
+| **Close on Backdrop Click** | Close modal when clicking outside the video |
+| **Close on ESC Key** | Close modal when pressing the Escape key |
+
+### Custom Icon Upload
+
+You can use your own image as the button icon:
+
+1. In **Button Appearance**, click the icon picker
+2. Select the **Upload** tab
+3. Click **Upload Image** and select your file
+4. Supported formats: PNG, SVG, GIF, WebP
+5. Recommended: Square images with transparent backgrounds work best
+
+To remove a custom icon, click **Remove** in the upload preview and select a dashicon instead.
+
+### Example: Help Video Button
+
+Create a help button in the bottom-right corner:
+
+1. Add the Qvio Floating Button block
+2. Enter your help video ID
+3. Set **Button Style** to "Icon + Text (Pill)"
+4. Set **Button Label** to "Need Help?"
+5. Select the **editor-help** (question mark) icon
+6. Set **Position** to "Bottom Right"
+7. Configure modal as "Centered Overlay" with "Large" size
+8. Preview or publish your post
+
+### Example: Bare Icon Promo
+
+Create a minimal branded icon button:
+
+1. Add the Qvio Floating Button block
+2. Enter your promo video ID
+3. Set **Button Style** to "Bare Icon (No Background)"
+4. Upload your brand logo as a custom icon
+5. Set **Icon Size** to your desired pixel size (e.g., 64px)
+6. Set **Icon Color** to match your brand
+7. Position in the desired corner
 
 ---
 

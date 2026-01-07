@@ -36,4 +36,5 @@ Qvio is an AI-powered video platform that transforms how you create, manage, and
 ## Quick Links
 
 - **Qvio Platform**: [https://qvio.hia.ai](https://qvio.hia.ai)
+- **WordPress Plugin**: [https://wordpress.org/plugins/qvio-embed/](https://wordpress.org/plugins/qvio-embed/)
 - **Embed a Video**: Use the Share button on any video to get embed code
