@@ -412,8 +412,7 @@ Team Overview > Subscription Tab > Manage Subscription
 If you have questions or encounter issues with the new Teams feature:
 
 - **In-App Help**: Click the help icon in the navigation
-- **Support**: Contact support@qvio.ai
-- **Documentation**: Visit docs.qvio.ai
+- **Support**: Contact support@hia.ai
 
 ---
 
