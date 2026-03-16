@@ -97,9 +97,13 @@ Once added, you'll see the block settings in the right sidebar:
 | Setting | Description |
 |---------|-------------|
 | **Video ID** | Enter your Qvio video ID or paste a full Qvio URL |
+| **Playlist ID** | Enter a Qvio playlist ID to embed a playlist |
+| **Playlist Sidebar** | Control playlist sidebar visibility: Auto (default), Force Open, or Force Collapsed |
 | **Aspect Ratio** | Choose from 16:9 (default), 4:3, 21:9, or 1:1 |
 | **Embed Type** | Select "Video" for full player or "Q&A Only" for the Q&A interface |
 | **Autoplay** | Toggle to enable/disable autoplay |
+
+> **Note:** You can enter just a Playlist ID (without a Video ID) to embed a playlist starting on its first video. The Playlist Sidebar setting only appears when a Playlist ID is entered and embed type is "Video".
 
 ### Block Features
 
@@ -241,10 +245,14 @@ The shortcode works in the Classic Editor, text widgets, and anywhere shortcodes
 
 | Parameter | Values | Default | Description |
 |-----------|--------|---------|-------------|
-| `id` | Video ID or URL | (required) | Your Qvio video ID or full video URL |
+| `id` | Video ID or URL | — | Your Qvio video ID or full video URL |
+| `playlist` | Playlist ID | — | Qvio playlist ID |
+| `collapsed` | `true`, `false` | `false` | Start with playlist sidebar collapsed |
 | `autoplay` | `true`, `false` | `false` | Auto-start video when loaded |
 | `aspect` | `16:9`, `4:3`, `21:9`, `1:1` | `16:9` | Video aspect ratio |
 | `type` | `video`, `qna` | `video` | Embed type (full player or Q&A only) |
+
+> **Note:** At least one of `id` or `playlist` is required.
 
 ### Shortcode Examples
 
@@ -271,6 +279,21 @@ The shortcode works in the Classic Editor, text widgets, and anywhere shortcodes
 **Full URL instead of ID:**
 ```
 [qvio id="https://qvio.hia.ai/watch?v=jsUW-0csSje-4Yy9MRtRWw"]
+```
+
+**Playlist embed (starts on first video):**
+```
+[qvio playlist="YOUR_PLAYLIST_ID"]
+```
+
+**Specific video in a playlist:**
+```
+[qvio id="jsUW-0csSje-4Yy9MRtRWw" playlist="YOUR_PLAYLIST_ID"]
+```
+
+**Playlist with sidebar collapsed:**
+```
+[qvio playlist="YOUR_PLAYLIST_ID" collapsed="true"]
 ```
 
 ---

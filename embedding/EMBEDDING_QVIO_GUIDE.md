@@ -74,17 +74,30 @@ Replace `YOUR_VIDEO_ID` with your video's short ID (found in the video's share U
 
 | Parameter  | Required | Values           | Description                                    |
 | ---------- | -------- | ---------------- | ---------------------------------------------- |
-| `v`        | Yes      | Short video ID   | The unique identifier for your video           |
+| `v`        | No*      | Short video ID   | The unique identifier for your video           |
+| `p`        | No*      | Short playlist ID | The unique identifier for a playlist          |
 | `autoplay` | No       | `true` / `false` | Auto-play video when loaded (default: `false`) |
+| `plc`      | No       | `0` / `1`        | Playlist sidebar collapsed on load (`1` = collapsed, `0` = expanded) |
+
+*At least one of `v` or `p` is required.
 
 **Example URLs:**
 
 ```
-# Basic embed
+# Basic video embed
 https://qvio.hia.ai/embed?v=jsUW-0csSje-4Yy9MRtRWw
 
 # With autoplay enabled
 https://qvio.hia.ai/embed?v=jsUW-0csSje-4Yy9MRtRWw&autoplay=true
+
+# Playlist embed (starts on first video)
+https://qvio.hia.ai/embed?p=YOUR_PLAYLIST_ID
+
+# Specific video in a playlist
+https://qvio.hia.ai/embed?v=jsUW-0csSje-4Yy9MRtRWw&p=YOUR_PLAYLIST_ID
+
+# Playlist with sidebar collapsed
+https://qvio.hia.ai/embed?p=YOUR_PLAYLIST_ID&plc=1
 ```
 
 ---
@@ -566,6 +579,7 @@ Content-Security-Policy:
 | Fullscreen        | Yes                      |
 | Voice interaction | Yes                      |
 | Responsive sizing | Yes                      |
+| Playlist embed    | Yes (use `p` parameter)  |
 | Q&A overlay       | Yes (use `/embedqna`)    |
 | Custom styling    | Limited (container only) |
 | Mobile support    | Yes                      |
