@@ -254,6 +254,8 @@ For full control over the embed at different breakpoints:
 
 WordPress has security restrictions that may block or strip iframe content. This is because WordPress sanitizes HTML in posts and pages to prevent malicious code injection. Here are solutions:
 
+> **Recommended:** Install the official [Qvio Embed plugin](../wordpress/WORDPRESS_PLUGIN_GUIDE.md). It provides a `[qvio]` shortcode (and Gutenberg blocks) that handle sanitization, responsive sizing, and **playlists** for you. The manual options below are fallbacks for sites that cannot install plugins. **Do not combine a manual `[qvio]` shortcode with the plugin** — both register the same tag and conflict (see Option 2).
+
 #### Option 1: HTML Block (Gutenberg Editor)
 
 **Why this works:** The Custom HTML block bypasses WordPress's content sanitization, allowing raw HTML including iframes to be rendered directly.
@@ -267,9 +269,11 @@ WordPress has security restrictions that may block or strip iframe content. This
 
 *[WordPress Custom HTML Block Guide](https://gogutenberg.com/blocks/custom-html/)*
 
-#### Option 2: Embed Shortcode
+#### Option 2: Manual Shortcode (no plugin)
 
 **Why this works:** Shortcodes are processed server-side before content sanitization occurs. By registering a custom shortcode, you control the HTML output and WordPress trusts the output from registered shortcode functions.
+
+> **⚠️ Do not use this alongside the Qvio Embed plugin.** The plugin already registers a `[qvio]` shortcode. Defining your own `[qvio]` in `functions.php` collides with it — the theme's definition loads last and silently overrides the plugin, so plugin-only features (playlists, `collapsed`, `aspect`) stop working. Use **either** the plugin **or** this manual snippet, not both. To avoid the collision, the example below registers the tag as `[qvio_iframe]`. This manual snippet does **not** support playlists — for playlist embeds use the [plugin](../wordpress/WORDPRESS_PLUGIN_GUIDE.md) or a raw iframe with the `p=` parameter.
 
 Add this to your theme's `functions.php`:
 
@@ -305,13 +309,13 @@ function qvio_embed_shortcode($atts) {
         esc_url($url)
     );
 }
-add_shortcode('qvio', 'qvio_embed_shortcode');
+add_shortcode('qvio_iframe', 'qvio_embed_shortcode');
 ```
 
 Then use in posts/pages:
 
 ```
-[qvio id="jsUW-0csSje-4Yy9MRtRWw" autoplay="true"]
+[qvio_iframe id="jsUW-0csSje-4Yy9MRtRWw" autoplay="true"]
 ```
 
 *[WordPress Shortcode API](https://developer.wordpress.org/plugins/shortcodes/)*
@@ -336,6 +340,33 @@ If you manage your WordPress server, ensure these headers allow Qvio:
 # In .htaccess or server config
 Header set Content-Security-Policy "frame-src 'self' https://qvio.hia.ai;"
 ```
+
+#### Block-Free Sites: Bedrock, ACF, and Page Builders
+
+If your site renders content through PHP templates, Advanced Custom Fields (ACF), or a page builder rather than the block editor, a pasted `[qvio]` shortcode or raw iframe can fail silently. Three things to check:
+
+**1. Shortcodes only run on post content.** WordPress expands shortcodes through the `the_content` filter. Content output any other way is not processed automatically:
+
+- An **ACF WYSIWYG field** rendered with `the_field('name')` runs the `the_content` filters, so shortcodes *do* execute.
+- **ACF Text/Textarea fields**, or any value printed with `get_field()` / `echo`, do **not** run shortcodes. Wrap them in your template:
+
+  ```php
+  echo do_shortcode( get_field('video_embed') );
+  ```
+
+If `[qvio …]` appears as literal text on the published page, this is the cause.
+
+**2. Raw iframes get stripped on save.** WordPress's KSES sanitizer removes `<iframe>` tags from content saved by any user without the `unfiltered_html` capability (which includes every user on multisite). If an iframe disappears after saving an ACF field or post, this is why. Either use the shortcode (the iframe is generated at render time, after sanitization) or hard-code the iframe in a PHP template file — template output is not KSES-filtered.
+
+**3. Trellis/Bedrock security headers.** Bedrock only changes the directory layout (plugins live in `web/app/plugins/`); the plugin and shortcode work normally there. The common blocker is **Trellis**, which ships a Content-Security-Policy in its nginx config. The embedding page's CSP must allow Qvio as a frame and media source:
+
+```
+Content-Security-Policy:
+  frame-src https://qvio.hia.ai;
+  media-src https://qvio.hia.ai https://*.blob.core.windows.net;
+```
+
+Set this in your Trellis nginx includes (the site's security-headers partial), not in `.htaccess`. Note that `X-Frame-Options` on *your* site does **not** affect embedding Qvio — that header only controls whether *your* pages can be framed elsewhere. A blank embed box with a `frame-src` error in the browser console points to the parent page's CSP.
 
 ### Squarespace
 

@@ -398,12 +398,20 @@ If the shortcode displays as plain text instead of a video:
 1. Verify the plugin is activated
 2. Check you're not inside a code block or preformatted text
 3. Ensure shortcodes are enabled for your content type
+4. If the shortcode lives in an **ACF field, custom field, or page-builder block** rather than the main post content, it may not run through WordPress's `the_content` filter. Output it from your template with `echo do_shortcode( get_field('your_field') );` — see [Block-Free Sites: Bedrock, ACF, and Page Builders](../embedding/EMBEDDING_QVIO_GUIDE.md#block-free-sites-bedrock-acf-and-page-builders) in the embedding guide.
+
+### Playlist or Other Attributes Ignored
+
+If the video loads but `playlist`, `collapsed`, or `aspect` have no effect, another `[qvio]` shortcode is likely overriding this plugin's. This happens when a theme's `functions.php` (or another plugin) also registers `[qvio]` — for example, the manual snippet from older versions of the [embedding guide](../embedding/EMBEDDING_QVIO_GUIDE.md#option-2-manual-shortcode-no-plugin). Whichever registers last wins, and themes load after plugins, so the theme's version takes over and ignores the extra attributes.
+
+**Fix:** Remove the duplicate `add_shortcode( 'qvio', … )` from your theme or other plugin and let Qvio Embed own the `[qvio]` tag.
 
 ### Blank Space Where Video Should Be
 
 1. Check browser console for CSP (Content Security Policy) errors
 2. Verify your site's security settings allow frames from `qvio.hia.ai`
 3. If using a caching plugin, clear the cache
+4. On Bedrock/Trellis sites, add `qvio.hia.ai` to the `frame-src` (and `media-src`) of your nginx Content-Security-Policy — see [Block-Free Sites](../embedding/EMBEDDING_QVIO_GUIDE.md#block-free-sites-bedrock-acf-and-page-builders).
 
 ---
 
