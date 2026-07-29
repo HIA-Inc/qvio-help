@@ -58,6 +58,7 @@ The base URL is always `https://qvio.hia.ai/watch` followed by query parameters.
 | `p` | Playlist ID - Display the video within a playlist context, showing the playlist panel | Playlist short ID | None |
 | `trackId` | Analytics tracking ID for attributing views to specific campaigns or sources | Any string | None |
 | `playlistAutoScroll` | When viewing a playlist, auto-scroll to the current video in the playlist panel | `true` or `false` | `false` |
+| `cp` | Continuous playlist mode - hide the playlist panel and play the playlist as one continuous presentation, advancing automatically from each video to the next. Requires `p` | `true` (only value that enables it) | `false` |
 
 ---
 
@@ -113,6 +114,16 @@ When sharing a video deep in a playlist, use `playlistAutoScroll` to automatical
 https://qvio.hia.ai/watch?v=jsUW-0csSje-4Yy9MRtRWw&p=abc123PlaylistId&playlistAutoScroll=true
 ```
 
+### Continuous Playlist Mode
+
+Share a playlist as one continuous presentation. The playlist panel is hidden and each video advances automatically into the next, while the player's chapter navigation (previous/next buttons and the chapter menu) remains available:
+
+```
+https://qvio.hia.ai/watch?v=jsUW-0csSje-4Yy9MRtRWw&p=abc123PlaylistId&cp=true
+```
+
+> **Note:** `cp=true` does not start playback on its own - combine it with `ap=true` to also autoplay the first video.
+
 ### Analytics Tracking
 
 Track views from a specific marketing campaign or source:
@@ -166,6 +177,7 @@ When watching a video that's part of a playlist:
 |--------|--------|
 | Copy Link | Copies the watch page URL to clipboard with appropriate video/playlist IDs |
 | Start at current time | Adds `&startTime=X` to the URL based on current playback position |
+| Play as continuous video (hide playlist panel) | Adds `&cp=true` to the share link and embed code - available for playlist shares only |
 | Embed Video | Generates iframe code for embedding (uses `/embed` URL) - available for videos only |
 | QR Code | Downloads a QR code image for the video link |
 
@@ -181,7 +193,8 @@ Qvio provides two types of URLs for different use cases:
 | **URL format** | `/watch?v=ID` | `/embed?v=ID` |
 | **Autoplay param** | `ap=true` | `autoplay=true` |
 | **Start time** | `startTime=X` | `startTime=X` |
-| **Playlist support** | Yes (`p=ID`) | No |
+| **Playlist support** | Yes (`p=ID`) | Yes (`p=ID`) |
+| **Continuous playlist** | Yes (`cp=true`) | Yes (`cp=true`) |
 | **Analytics tracking** | Yes (`trackId=X`) | No |
 | **Full Qvio UI** | Yes (header, Q&A panel, etc.) | Minimal (video player only) |
 

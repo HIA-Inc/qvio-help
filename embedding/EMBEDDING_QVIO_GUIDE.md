@@ -78,6 +78,7 @@ Replace `YOUR_VIDEO_ID` with your video's short ID (found in the video's share U
 | `p`        | No*      | Short playlist ID | The unique identifier for a playlist          |
 | `autoplay` | No       | `true` / `false` | Auto-play video when loaded (default: `false`) |
 | `plc`      | No       | `0` / `1`        | Playlist sidebar collapsed on load (`1` = collapsed, `0` = expanded) |
+| `cp`       | No       | `true`           | Continuous playlist mode - hides the playlist sidebar and plays the videos as one continuous presentation. Requires `p`; takes precedence over `plc` |
 
 *At least one of `v` or `p` is required.
 
@@ -98,6 +99,9 @@ https://qvio.hia.ai/embed?v=jsUW-0csSje-4Yy9MRtRWw&p=YOUR_PLAYLIST_ID
 
 # Playlist with sidebar collapsed
 https://qvio.hia.ai/embed?p=YOUR_PLAYLIST_ID&plc=1
+
+# Playlist as one continuous video (sidebar hidden, videos advance automatically)
+https://qvio.hia.ai/embed?p=YOUR_PLAYLIST_ID&cp=true
 ```
 
 ---
