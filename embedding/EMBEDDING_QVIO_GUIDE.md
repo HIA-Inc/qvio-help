@@ -7,6 +7,7 @@ This guide provides comprehensive instructions for embedding Qvio videos into ex
 - [Quick Start](#quick-start)
 - [Embed Code Structure](#embed-code-structure)
 - [URL Parameters](#url-parameters)
+- [Playlist Embeds](#playlist-embeds)
 - [Sizing and Responsive Design](#sizing-and-responsive-design)
 - [Platform-Specific Instructions](#platform-specific-instructions)
 - [Troubleshooting](#troubleshooting)
@@ -23,7 +24,7 @@ Copy and paste the following iframe code into your website's HTML:
 ```html
 <iframe
   title="My Qvio Video"
-  src="https://qvio.hia.ai/embed?v=YOUR_VIDEO_ID&autoplay=true"
+  src="https://qvio.hia.ai/embed?v=YOUR_VIDEO_ID&ap=true"
   allow="microphone;autoplay;fullscreen"
   allowtransparency="true"
   width="1280"
@@ -42,7 +43,7 @@ Replace `YOUR_VIDEO_ID` with your video's short ID (found in the video's share U
 ```html
 <iframe
   title="488EF0D9-E229-4B3C-862D-221A8ECAC128"
-  src="https://qvio.hia.ai/embed?v=jsUW-0csSje-4Yy9MRtRWw&autoplay=true"
+  src="https://qvio.hia.ai/embed?v=jsUW-0csSje-4Yy9MRtRWw&ap=true"
   allow="microphone;autoplay;fullscreen"
   allowtransparency="true"
   width="100%"
@@ -72,14 +73,20 @@ Replace `YOUR_VIDEO_ID` with your video's short ID (found in the video's share U
 
 ### Video Embed (`/embed`)
 
-| Parameter  | Required | Values           | Description                                    |
-| ---------- | -------- | ---------------- | ---------------------------------------------- |
-| `v`        | No*      | Short video ID   | The unique identifier for your video           |
-| `p`        | No*      | Short playlist ID | The unique identifier for a playlist          |
-| `autoplay` | No       | `true` / `false` | Auto-play video when loaded (default: `false`) |
-| `plc`      | No       | `0` / `1`        | Playlist sidebar collapsed on load (`1` = collapsed, `0` = expanded) |
+| Parameter | Required | Values | Description |
+| --------- | -------- | ------ | ----------- |
+| `v` | No* | Short video ID | The unique identifier for your video |
+| `p` | No* | Short playlist ID | The unique identifier for a playlist |
+| `ap` | No | `true` / `false` | Auto-play video when loaded (default: `false`) |
+| `autoplay` | No | `true` / `false` | **Deprecated alias for `ap`.** Still honored so embeds already published keep working - use `ap` in new embed code |
+| `plc` | No | `0` / `1` | Playlist sidebar state on load. Omitting it is a distinct third behavior - see [Playlist Sidebar Behavior](#playlist-sidebar-behavior). Requires `p` |
+| `cp` | No | `true` | Continuous playlist mode - hides the playlist sidebar and plays the videos as one continuous presentation. Requires `p`; takes precedence over `plc` |
+| `playlistAutoScroll` | No | `true` / `false` | Scroll the playlist sidebar to the current video on load (default: `false`). Requires `p` |
+| `trackId` | No | Any string | Analytics tracking ID, for attributing embedded views to a campaign or source |
 
 *At least one of `v` or `p` is required.
+
+> **Not supported on `/embed`:** `startTime`. An embed always begins at the start of the video, and a `startTime` value in an `/embed` URL is ignored. This includes embed code copied from the share dialog - the **Start at current time** option applies to the watch-page link only.
 
 **Example URLs:**
 
@@ -88,7 +95,7 @@ Replace `YOUR_VIDEO_ID` with your video's short ID (found in the video's share U
 https://qvio.hia.ai/embed?v=jsUW-0csSje-4Yy9MRtRWw
 
 # With autoplay enabled
-https://qvio.hia.ai/embed?v=jsUW-0csSje-4Yy9MRtRWw&autoplay=true
+https://qvio.hia.ai/embed?v=jsUW-0csSje-4Yy9MRtRWw&ap=true
 
 # Playlist embed (starts on first video)
 https://qvio.hia.ai/embed?p=YOUR_PLAYLIST_ID
@@ -98,7 +105,51 @@ https://qvio.hia.ai/embed?v=jsUW-0csSje-4Yy9MRtRWw&p=YOUR_PLAYLIST_ID
 
 # Playlist with sidebar collapsed
 https://qvio.hia.ai/embed?p=YOUR_PLAYLIST_ID&plc=1
+
+# Playlist with sidebar forced open, even on narrow embeds
+https://qvio.hia.ai/embed?p=YOUR_PLAYLIST_ID&plc=0
+
+# Playlist as one continuous video (sidebar hidden, videos advance automatically)
+https://qvio.hia.ai/embed?p=YOUR_PLAYLIST_ID&cp=true
+
+# Attributing embedded views to a campaign
+https://qvio.hia.ai/embed?v=jsUW-0csSje-4Yy9MRtRWw&trackId=summer-campaign-2026
 ```
+
+---
+
+## Playlist Embeds
+
+Add `p=YOUR_PLAYLIST_ID` to embed a playlist. The embed opens on the playlist's first video unless you also pass `v=`, and viewers get a playlist sidebar alongside in-player chapter navigation.
+
+### Auto-Advance and Chapter Navigation
+
+Playlist embeds play through the whole playlist:
+
+- When a video ends, the next one loads and starts automatically. The transition is seamless - the outgoing video's last frame holds until the incoming source takes over, with no loading indicator between items.
+- The player exposes **previous/next chapter** controls and a chapter menu listing every video in the playlist, so viewers can jump straight to any item.
+
+Chapter navigation is present in every playlist embed, continuous mode included.
+
+### Playlist Sidebar Behavior
+
+`plc` has three states, and omitting it is not the same as setting it to `0`:
+
+| `plc` | Behavior |
+| ----- | -------- |
+| *(omitted)* | **Auto** - expanded on wide embeds, automatically collapsed on narrow ones |
+| `0` | **Force open** - starts expanded and stays expanded, including on narrow embeds where Auto would have collapsed it |
+| `1` | **Force collapsed** - starts collapsed at any size; viewers can open it with the toggle |
+
+"Narrow" means an embed viewport **768px or less wide**, or 500px or less tall in landscape orientation. Below that threshold the sidebar becomes an overlay on top of the player: in Auto mode it starts collapsed, and picking a video from it collapses it again so the player is unobstructed. Above the threshold the sidebar stays open after a selection, so viewers can keep browsing the list while watching.
+
+Because a responsive embed is usually narrower than 768px on a phone, a playlist embed that must always show its sidebar needs `plc=0` set explicitly.
+
+### Continuous Mode
+
+`cp=true` presents the playlist as one uninterrupted presentation: the sidebar is not rendered at all and videos advance automatically. The player's chapter navigation stays available.
+
+`cp=true` takes precedence over `plc`, since there is no sidebar left for `plc` to configure. It requires `p`, and it does not start playback on its own - combine it with `ap=true` to autoplay the first video.
 
 ---
 
@@ -115,13 +166,15 @@ For optimal viewing of 16:9 video content:
 
 **Note:** The minimum recommended size for 16:9 content is **320×180 pixels**. Below this size, video controls may become difficult to use.
 
+**Playlist embeds:** at 768px wide or less the playlist sidebar renders as a collapsible overlay rather than a side-by-side panel, and in Auto mode it starts collapsed. See [Playlist Sidebar Behavior](#playlist-sidebar-behavior).
+
 ### Fixed Size Embed
 
 For a fixed 16:9 aspect ratio container:
 
 ```html
 <iframe
-  src="https://qvio.hia.ai/embed?v=YOUR_VIDEO_ID&autoplay=true"
+  src="https://qvio.hia.ai/embed?v=YOUR_VIDEO_ID&ap=true"
   allow="microphone;autoplay;fullscreen"
   allowtransparency="true"
   width="1280"
@@ -166,7 +219,7 @@ To make the embed responsive, wrap the iframe in a container that maintains aspe
 <div class="qvio-container">
   <iframe
     title="My Qvio Video"
-    src="https://qvio.hia.ai/embed?v=YOUR_VIDEO_ID&autoplay=true"
+    src="https://qvio.hia.ai/embed?v=YOUR_VIDEO_ID&ap=true"
     allow="microphone;autoplay;fullscreen"
     allowtransparency="true"
   ></iframe>
@@ -230,7 +283,7 @@ For full control over the embed at different breakpoints:
 <div class="qvio-responsive">
   <iframe
     title="My Qvio Video"
-    src="https://qvio.hia.ai/embed?v=YOUR_VIDEO_ID&autoplay=true"
+    src="https://qvio.hia.ai/embed?v=YOUR_VIDEO_ID&ap=true"
     allow="microphone;autoplay;fullscreen"
     allowtransparency="true"
   ></iframe>
@@ -292,7 +345,7 @@ function qvio_embed_shortcode($atts) {
 
     $url = 'https://qvio.hia.ai/embed?v=' . esc_attr($atts['id']);
     if ($atts['autoplay'] === 'true') {
-        $url .= '&autoplay=true';
+        $url .= '&ap=true';
     }
 
     return sprintf(
@@ -420,7 +473,7 @@ Add directly to your Liquid template (e.g., `page.liquid`, `product.liquid`):
   style="position:relative;width:100%;padding-bottom:56.25%;height:0;"
 >
   <iframe
-    src="https://qvio.hia.ai/embed?v=YOUR_VIDEO_ID&autoplay=true"
+    src="https://qvio.hia.ai/embed?v=YOUR_VIDEO_ID&ap=true"
     allow="microphone;autoplay;fullscreen"
     allowtransparency="true"
     style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;"
@@ -435,7 +488,7 @@ Add directly to your Liquid template (e.g., `page.liquid`, `product.liquid`):
 
 ```jsx
 function QvioEmbed({ videoId, autoplay = true }) {
-  const src = `https://qvio.hia.ai/embed?v=${videoId}${autoplay ? "&autoplay=true" : ""}`;
+  const src = `https://qvio.hia.ai/embed?v=${videoId}${autoplay ? "&ap=true" : ""}`;
 
   return (
     <div
@@ -492,7 +545,7 @@ export default {
   computed: {
     embedUrl() {
       const base = `https://qvio.hia.ai/embed?v=${this.videoId}`;
-      return this.autoplay ? `${base}&autoplay=true` : base;
+      return this.autoplay ? `${base}&ap=true` : base;
     },
   },
 };
@@ -604,16 +657,22 @@ Content-Security-Policy:
 
 ## Feature Summary
 
-| Feature           | Supported                |
-| ----------------- | ------------------------ |
-| Autoplay          | Yes                      |
-| Fullscreen        | Yes                      |
-| Voice interaction | Yes                      |
-| Responsive sizing | Yes                      |
-| Playlist embed    | Yes (use `p` parameter)  |
-| Q&A overlay       | Yes (use `/embedqna`)    |
-| Custom styling    | Limited (container only) |
-| Mobile support    | Yes                      |
+| Feature | Supported |
+| ------- | --------- |
+| Autoplay | Yes (use `ap=true`) |
+| Fullscreen | Yes |
+| Voice interaction | Yes |
+| Responsive sizing | Yes |
+| Playlist embed | Yes (use `p` parameter) |
+| Playlist auto-advance | Yes (automatic in playlist embeds) |
+| Chapter navigation | Yes (in-player, playlist embeds) |
+| Continuous playback | Yes (use `cp=true`) |
+| Playlist sidebar control | Yes (use `plc`) |
+| Analytics tracking | Yes (use `trackId`) |
+| Start at a specific time | No (`startTime` is ignored on `/embed`) |
+| Q&A overlay | Yes (use `/embedqna`) |
+| Custom styling | Limited (container only) |
+| Mobile support | Yes |
 
 ---
 
