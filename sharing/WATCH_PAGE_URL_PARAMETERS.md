@@ -163,6 +163,11 @@ The easiest way to create share links is using the **Share** button in the Qvio 
 
 When sharing a playlist, the link will include the playlist ID. If you're viewing a specific video within the playlist, the link will include both the video ID and playlist ID so viewers see the video in context.
 
+The exact link shape depends on whether a video in the playlist is currently open:
+
+- **A playlist video is open** - the link is a watch URL carrying both IDs (`/watch?v=VIDEO_ID&p=PLAYLIST_ID`).
+- **No video is open** - the link points at the playlist page itself (`/playlists?v=PLAYLIST_ID`), which has no player. **Play as continuous video** is not offered in this case, because `cp` has no player to act on.
+
 ### Sharing a Video Within a Playlist
 
 When watching a video that's part of a playlist:
@@ -173,13 +178,22 @@ When watching a video that's part of a playlist:
 
 ### Share Dialog Options
 
+The dialog is organized into tabs:
+
+| Tab | Result |
+|--------|--------|
+| Social | Shares the watch link to a social network. Where the network supports it, the post is prefilled with the Qvio name |
+| Embed | Generates iframe code for embedding, using the `/embed` URL. Available for both video and playlist shares, and only when embed link sharing is enabled for the team |
+| QR Code | Downloads a QR code image for the watch link |
+| Unique Codes | Issues per-share tracking codes and copies a watch link with `&trackId=` already appended, for attributing views to a specific recipient or campaign |
+
+Options that apply to the generated link:
+
 | Option | Result |
 |--------|--------|
 | Copy Link | Copies the watch page URL to clipboard with appropriate video/playlist IDs |
-| Start at current time | Adds `&startTime=X` to the URL based on current playback position |
-| Play as continuous video (hide playlist panel) | Adds `&cp=true` to the share link and embed code - available for playlist shares only |
-| Embed Video | Generates iframe code for embedding (uses `/embed` URL) - available for videos only |
-| QR Code | Downloads a QR code image for the video link |
+| Start at current time | Adds `&startTime=X` to the watch link based on current playback position. It does not affect embed code - `/embed` ignores `startTime` |
+| Play as continuous video (hide playlist panel) | Adds `&cp=true` to the share link and embed code - playlist shares only, and only when the playlist has a current video to link to |
 
 ---
 
@@ -191,11 +205,13 @@ Qvio provides two types of URLs for different use cases:
 |---------|----------------------|----------------------|
 | **Use case** | Direct sharing, social media | Embedding in websites via iframe |
 | **URL format** | `/watch?v=ID` | `/embed?v=ID` |
-| **Autoplay param** | `ap=true` | `autoplay=true` |
-| **Start time** | `startTime=X` | `startTime=X` |
+| **Autoplay param** | `ap=true` | `ap=true` (legacy `autoplay=true` still honored) |
+| **Start time** | Yes (`startTime=X`) | No - ignored on `/embed` |
 | **Playlist support** | Yes (`p=ID`) | Yes (`p=ID`) |
 | **Continuous playlist** | Yes (`cp=true`) | Yes (`cp=true`) |
-| **Analytics tracking** | Yes (`trackId=X`) | No |
+| **Playlist sidebar control** | No | Yes (`plc`) |
+| **Playlist auto-scroll** | Yes (`playlistAutoScroll=true`) | Yes (`playlistAutoScroll=true`) |
+| **Analytics tracking** | Yes (`trackId=X`) | Yes (`trackId=X`) |
 | **Full Qvio UI** | Yes (header, Q&A panel, etc.) | Minimal (video player only) |
 
 ### When to Use Each

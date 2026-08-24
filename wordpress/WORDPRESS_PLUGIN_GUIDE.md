@@ -247,12 +247,14 @@ The shortcode works in the Classic Editor, text widgets, and anywhere shortcodes
 |-----------|--------|---------|-------------|
 | `id` | Video ID or URL | — | Your Qvio video ID or full video URL |
 | `playlist` | Playlist ID | — | Qvio playlist ID |
-| `collapsed` | `true`, `false` | `false` | Start with playlist sidebar collapsed |
+| `collapsed` | `true`, `false`, `open` | *(unset - Auto)* | Playlist sidebar state. Omit for Auto, where the sidebar collapses itself on narrow screens; `true` forces it collapsed; `false` or `open` forces it open at every screen size |
 | `autoplay` | `true`, `false` | `false` | Auto-start video when loaded |
 | `aspect` | `16:9`, `4:3`, `21:9`, `1:1` | `16:9` | Video aspect ratio |
 | `type` | `video`, `qna` | `video` | Embed type (full player or Q&A only) |
 
 > **Note:** At least one of `id` or `playlist` is required.
+
+> **Note:** Continuous playback (`cp=true`) is not available through the plugin as of version 1.2.0 - there is no shortcode attribute or block setting for it. To embed a playlist as one continuous presentation, use a raw iframe. See [Continuous Mode](../embedding/EMBEDDING_QVIO_GUIDE.md#continuous-mode).
 
 ### Shortcode Examples
 
@@ -294,6 +296,11 @@ The shortcode works in the Classic Editor, text widgets, and anywhere shortcodes
 **Playlist with sidebar collapsed:**
 ```
 [qvio playlist="YOUR_PLAYLIST_ID" collapsed="true"]
+```
+
+**Playlist with sidebar always open (no auto-collapse on narrow screens):**
+```
+[qvio playlist="YOUR_PLAYLIST_ID" collapsed="open"]
 ```
 
 ---
