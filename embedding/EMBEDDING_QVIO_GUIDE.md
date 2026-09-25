@@ -29,10 +29,13 @@ Copy and paste the following iframe code into your website's HTML:
   allowtransparency="true"
   width="1280"
   height="720"
+  style="border: 0;"
 ></iframe>
 ```
 
-Replace `YOUR_VIDEO_ID` with your video's short ID (found in the video's share URL).
+Replace `YOUR_VIDEO_ID` with your video's short ID (found in the video's share URL). `ap=true` makes the video start on its own. Delete `&ap=true` to have it wait for a click. `style="border: 0;"` removes the beveled border browsers draw around iframes by default.
+
+> **Using a site builder?** Wix and similar builders wrap your code in their own frame, which needs extra handling. See [Platform-Specific Instructions](#platform-specific-instructions).
 
 ---
 
@@ -66,6 +69,7 @@ Replace `YOUR_VIDEO_ID` with your video's short ID (found in the video's share U
 | `title`   | Video name or ID | Label for the iframe           |
 | `width`   | `1280` or `100%` | Width in pixels or percentage  |
 | `height`  | `720` or `100%`  | Height in pixels or percentage |
+| `style`   | `border: 0;`     | Removes the browser's default 2px inset border |
 
 ---
 
@@ -441,17 +445,52 @@ Set this in your Trellis nginx includes (the site's security-headers partial), n
 
 ### Wix
 
-**Why this works:** Wix provides an HTML iframe element that can embed external content or custom code directly on your page.
+**How Wix embeds work:** In **Code** mode, Wix doesn't place your iframe on the page directly. It saves your code as a separate page on Wix's file domain (`*.filesusr.com`) and shows that page inside a Wix frame, so the Qvio iframe ends up **inside a second, Wix-controlled iframe**. That has three consequences a plain iframe paste doesn't handle:
 
-1. Click **Add Elements** on the left side of the editor
-2. Click **Embed Code** → **Embed HTML**
-3. In the settings panel, select **Code** and paste your iframe HTML
-4. Resize the element to your desired dimensions
+- **Browser defaults show through.** The Wix-hosted page keeps the browser's default 8px body margin, and the Qvio iframe gets the default 2px inset border. The result is a beveled frame around the video and a scrollbar beside it. Use the Wix-ready code below, which resets both.
+- **Wix's frame only grants `fullscreen`.** A nested frame can't have permissions its parent lacks, so the `microphone` and `autoplay` in your `allow` attribute have no effect on Wix. Viewers can still ask typed and suggested questions, but **voice questions are unavailable**, and `ap=true` can only start the video **muted** (with an unmute prompt).
+- **Size is set on the Wix element**, not in your code.
+
+**Steps:**
+
+1. Add an Embed HTML element:
+   - **Wix Editor:** **Add Elements** → **Embed Code** → **Embed HTML**
+   - **Wix Studio:** **Add Elements** → **Embed & Social** → **Embed HTML**
+2. Choose **Code** (not **Website address**), paste the Wix-ready code below, and click **Update**
+3. Size the element: set its width to **100%** of its container and give it a **16:9** shape (turn the proportion lock off, enter 960 × 540, turn the lock back on, then set the width to 100%). On phones, let it span the full screen width so the player has room for its controls.
+4. **Wix Studio:** repeat step 3 on the **Tablet** and **Mobile** breakpoints. Breakpoint overrides can leave a box oversized or offset on smaller screens.
+5. Publish, then check the **live** site on a computer and a phone. The editor preview doesn't show the final frame.
+
+**Wix-ready embed code:**
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: transparent; }
+  iframe { display: block; width: 100%; height: 100%; border: 0; }
+</style>
+</head>
+<body>
+<iframe
+  title="Describe the video for screen readers"
+  src="https://qvio.hia.ai/embed?v=YOUR_VIDEO_ID"
+  allow="microphone; autoplay; fullscreen"
+  allowfullscreen
+  allowtransparency="true"></iframe>
+</body>
+</html>
+```
+
+- Replace `YOUR_VIDEO_ID`. For a playlist use `embed?p=YOUR_PLAYLIST_ID`. Add `&plc=1` to start the playlist sidebar collapsed, so the player fills a clean 16:9 box (see [Playlist Sidebar Behavior](#playlist-sidebar-behavior)).
+- Embed code copied from Qvio's **Share** dialog ends in `&ap=true` (autoplay). Keep only the `src` link from it, and delete `&ap=true` unless you want the video to start on its own, muted.
+- Replace the `title` with a short description of the video. Screen readers announce it.
 
 **Important considerations:**
-- The embedded URL must use HTTPS — HTTP URLs will work in preview but not on your published site
-- Embedded iframes in Wix are not automatically responsive; replace `px` values with `100%` for width/height to prevent content cropping
-- Some sites block iframe embedding due to security policies
+- The embedded URL must use HTTPS. HTTP URLs work in preview but not on your published site.
+- Keep the `html, body` rule. Without it, removing the border still leaves a white margin and a scrollbar.
+- **Need voice questions on a Wix site?** No code pasted into an Embed HTML box can change the permissions of Wix's frame. Contact HIA to discuss options.
 
 *[Wix HTML iFrame Documentation](https://support.wix.com/en/article/wix-editor-embedding-a-site-or-a-widget)*
 
@@ -603,6 +642,22 @@ Modern browsers restrict autoplay. Qvio handles this gracefully, but note:
 
 The video will display a play button if autoplay is blocked.
 
+- **Autoplay usually starts muted.** Browsers commonly allow autoplay only without sound, so Qvio shows an unmute prompt.
+- **Nested frames:** if your site builder wraps your code in its own iframe (for example, a Wix Embed HTML element), that outer frame must also grant `autoplay`. If it doesn't, autoplay can only ever start muted. See [Wix](#wix).
+
+### Turning Autoplay Off
+
+Qvio autoplays only when the embed URL includes `ap=true` (or the older `autoplay=true`). Delete that parameter from the `src` URL, and the video waits for the viewer to press play. Leave `autoplay` in the `allow` attribute: it's a permission, not a setting, and removing it doesn't turn autoplay off. Playlist embeds still advance to the next video when one finishes. That's playlist behavior, not autoplay.
+
+### Border or Scrollbar Around the Video
+
+- **Beveled grey border:** browsers draw `border: 2px inset` on every iframe unless told otherwise. Add `style="border: 0;"` to the iframe.
+- **Scrollbar beside the video, or a white gap:** your code is running inside a builder-hosted page with the default 8px body margin (common on Wix). Reset it with `html, body { margin: 0; height: 100%; overflow: hidden; }`. See the [Wix-ready embed code](#wix).
+
+### Voice Questions Not Available
+
+Voice questions need the `microphone` permission from **every** frame between your page and the Qvio player. A plain iframe with `allow="microphone;autoplay;fullscreen"` on your own page is enough. If a site builder places your code inside its own iframe without `microphone` in that frame's `allow` list, as Wix Embed HTML does, the browser blocks the microphone and viewers can only type or pick suggested questions.
+
 ### Video Shows "Permission Denied"
 
 - The video may be set to **Private** - only the owner can view it
@@ -635,7 +690,7 @@ The `allow` attribute grants specific permissions to the embedded content:
 | `autoplay`   | Allows video to auto-play when loaded          |
 | `fullscreen` | Enables fullscreen video playback              |
 
-These permissions are scoped only to the Qvio iframe and do not affect your parent page.
+These permissions are scoped only to the Qvio iframe and do not affect your parent page. If the Qvio iframe sits inside another iframe (as with a Wix Embed HTML element), the outer iframe must grant the same permissions. A frame can't pass on permissions it doesn't have.
 
 ### Cross-Origin Security
 
@@ -685,7 +740,7 @@ If you are the owner of the video:
 3. Select **Embed** in the share modal
 4. Copy the provided iframe code directly — it's ready to paste into your website
 
-The embed code includes your video's unique ID and recommended settings. You can customize the `width`, `height`, and `autoplay` attributes as needed.
+The embed code includes your video's unique ID and recommended settings. You can customize the `width` and `height` attributes as needed. The code's link ends in `&ap=true`, which turns autoplay on. Delete it if the video should wait for a click (see [Turning Autoplay Off](#turning-autoplay-off)). On Wix, use the [Wix-ready embed code](#wix) and copy only the link from the share dialog.
 
 ### Finding the Video ID Manually
 
