@@ -212,6 +212,7 @@ Qvio provides two types of URLs for different use cases:
 | **Playlist sidebar control** | No | Yes (`plc`) |
 | **Playlist auto-scroll** | Yes (`playlistAutoScroll=true`) | Yes (`playlistAutoScroll=true`) |
 | **Analytics tracking** | Yes (`trackId=X`) | Yes (`trackId=X`) |
+| **Where-viewed analytics** | No | Yes (the host page; `pageUrl=` to set it, see [Where Your Embeds Are Viewed](../embedding/EMBEDDING_QVIO_GUIDE.md#where-your-embeds-are-viewed)) |
 | **Full Qvio UI** | Yes (header, Q&A panel, etc.) | Minimal (video player only) |
 
 ### When to Use Each
