@@ -10,6 +10,7 @@ This guide provides comprehensive instructions for embedding Qvio videos into ex
 - [Playlist Embeds](#playlist-embeds)
 - [Sizing and Responsive Design](#sizing-and-responsive-design)
 - [Platform-Specific Instructions](#platform-specific-instructions)
+- [Where Your Embeds Are Viewed](#where-your-embeds-are-viewed)
 - [Troubleshooting](#troubleshooting)
 - [Security Considerations](#security-considerations)
 - [Getting Your Embed Code](#getting-your-embed-code)
@@ -27,13 +28,14 @@ Copy and paste the following iframe code into your website's HTML:
   src="https://qvio.hia.ai/embed?v=YOUR_VIDEO_ID&ap=true"
   allow="microphone;autoplay;fullscreen"
   allowtransparency="true"
+  referrerpolicy="no-referrer-when-downgrade"
   width="1280"
   height="720"
   style="border: 0;"
 ></iframe>
 ```
 
-Replace `YOUR_VIDEO_ID` with your video's short ID (found in the video's share URL). `ap=true` makes the video start on its own. Delete `&ap=true` to have it wait for a click. `style="border: 0;"` removes the beveled border browsers draw around iframes by default.
+Replace `YOUR_VIDEO_ID` with your video's short ID (found in the video's share URL). `ap=true` makes the video start on its own. Delete `&ap=true` to have it wait for a click. `referrerpolicy` lets Qvio's analytics show which page of your site the video was watched on (see [Where Your Embeds Are Viewed](#where-your-embeds-are-viewed)). `style="border: 0;"` removes the beveled border browsers draw around iframes by default.
 
 > **Using a site builder?** Wix and similar builders wrap your code in their own frame, which needs extra handling. See [Platform-Specific Instructions](#platform-specific-instructions).
 
@@ -49,6 +51,7 @@ Replace `YOUR_VIDEO_ID` with your video's short ID (found in the video's share U
   src="https://qvio.hia.ai/embed?v=jsUW-0csSje-4Yy9MRtRWw&ap=true"
   allow="microphone;autoplay;fullscreen"
   allowtransparency="true"
+  referrerpolicy="no-referrer-when-downgrade"
   width="100%"
   height="100%"
 ></iframe>
@@ -70,6 +73,7 @@ Replace `YOUR_VIDEO_ID` with your video's short ID (found in the video's share U
 | `width`   | `1280` or `100%` | Width in pixels or percentage  |
 | `height`  | `720` or `100%`  | Height in pixels or percentage |
 | `style`   | `border: 0;`     | Removes the browser's default 2px inset border |
+| `referrerpolicy` | `no-referrer-when-downgrade` | Lets Qvio see which page of your site the embed is on. See [Where Your Embeds Are Viewed](#where-your-embeds-are-viewed) |
 
 ---
 
@@ -87,6 +91,7 @@ Replace `YOUR_VIDEO_ID` with your video's short ID (found in the video's share U
 | `cp` | No | `true` | Continuous playlist mode - hides the playlist sidebar and plays the videos as one continuous presentation. Requires `p`; takes precedence over `plc` |
 | `playlistAutoScroll` | No | `true` / `false` | Scroll the playlist sidebar to the current video on load (default: `false`). Requires `p` |
 | `trackId` | No | Any string | Analytics tracking ID, for attributing embedded views to a campaign or source |
+| `pageUrl` | No | URL-encoded page address | The address of the page the embed is on, for analytics. Only needed when the browser can't report it. See [Where Your Embeds Are Viewed](#where-your-embeds-are-viewed) |
 
 *At least one of `v` or `p` is required.
 
@@ -118,6 +123,9 @@ https://qvio.hia.ai/embed?p=YOUR_PLAYLIST_ID&cp=true
 
 # Attributing embedded views to a campaign
 https://qvio.hia.ai/embed?v=jsUW-0csSje-4Yy9MRtRWw&trackId=summer-campaign-2026
+
+# Reporting the page the embed is on (https://www.example.com/learn/onboarding/)
+https://qvio.hia.ai/embed?v=jsUW-0csSje-4Yy9MRtRWw&pageUrl=https%3A%2F%2Fwww.example.com%2Flearn%2Fonboarding%2F
 ```
 
 ---
@@ -611,6 +619,39 @@ export default {
 
 ---
 
+## Where Your Embeds Are Viewed
+
+Qvio's analytics show which site, and where possible which page, each embedded view came from. Look for the **Watched on** column in a Qvio's sessions list and the **Embed sources** panel on the Analytics page. The embed works this out when it loads, using the first of these it can get:
+
+1. A `pageUrl` parameter in the embed URL.
+2. The address the browser reports for the page hosting the iframe.
+3. The domain of the site hosting the iframe, where the browser exposes it.
+
+If none is available, the view is listed as **Unknown site**.
+
+### Reporting the Full Page
+
+By default, browsers tell an embedded iframe only the domain of the site hosting it (for example `https://www.example.com/`), not the page. Analytics then show the site, with the page listed as **Page not shared**. To report the page as well, use one of these:
+
+- **Add `referrerpolicy="no-referrer-when-downgrade"` to the iframe.** Embed code copied from Qvio's share dialog already includes it. It works when your page and Qvio both use HTTPS. Embed code copied before this attribute was added reports the domain only until you replace it.
+- **Pass the page in the embed URL with `pageUrl`.** Use the page's full address, URL-encoded: `&pageUrl=https%3A%2F%2Fwww.example.com%2Flearn%2Fonboarding%2F`. This also works where the browser reports nothing, for example in apps that show web content.
+- **WordPress:** the [Qvio Embed plugin](../wordpress/WORDPRESS_PLUGIN_GUIDE.md) adds `pageUrl` automatically from version 1.4.0, for the Qvio Video block, the Floating Button block and the `[qvio]` shortcode. Site owners can change or stop it with the `qvio_embed_page_url` filter (see [Page Address in Analytics](../wordpress/WORDPRESS_PLUGIN_GUIDE.md#page-address-in-analytics)).
+
+Site builders that put your code inside their own frame (such as [Wix](#wix)) report the builder's address rather than your page. Sites that send a `Referrer-Policy: no-referrer` header report nothing. In both cases, add `pageUrl` to report your page.
+
+### What Qvio Keeps
+
+- **The site and the page path only.** The query string (everything after `?`) and anything after `#` are removed before the view is recorded. With `referrerpolicy` set, the browser includes the full address when it loads the embed, but Qvio doesn't store or log it.
+- **Identifier-like path segments are hidden.** Segments that look like identifiers, such as numbers of four or more digits, email addresses and long codes, are replaced with `:id`. For example, `/patients/12345/education` is kept as `/patients/:id/education`. Analytics list these pages but don't link to them.
+- Qvio can't recognise every identifier (a person's name in a page address, for example). Avoid putting personal information in the addresses of pages that embed Qvio videos.
+- Views recorded before this reporting was added have no site.
+
+### Keeping Page Addresses Private
+
+The `referrerpolicy` attribute overrides a stricter referrer policy set by your site. If your site keeps its page addresses private, delete the attribute from the embed code. Views then show your domain only, with the page listed as **Page not shared**. Don't add `pageUrl` either. On WordPress, use the plugin's `qvio_embed_page_url` filter (see [Page Address in Analytics](../wordpress/WORDPRESS_PLUGIN_GUIDE.md#page-address-in-analytics)).
+
+---
+
 ## Troubleshooting
 
 ### Iframe Not Displaying
@@ -695,7 +736,7 @@ These permissions are scoped only to the Qvio iframe and do not affect your pare
 ### Cross-Origin Security
 
 - Qvio embeds use secure HTTPS connections
-- No sensitive data is passed between your site and the embed
+- No sensitive data is passed between your site and the embed. The embed reports the address of the page it is on, without the query string and with identifier-like segments hidden (see [What Qvio Keeps](#what-qvio-keeps))
 - The embed operates in an isolated browsing context
 
 ### Content Security Policy Recommendations
@@ -724,6 +765,7 @@ Content-Security-Policy:
 | Continuous playback | Yes (use `cp=true`) |
 | Playlist sidebar control | Yes (use `plc`) |
 | Analytics tracking | Yes (use `trackId`) |
+| Where-viewed analytics | Yes (automatic; full page with `referrerpolicy` or `pageUrl`) |
 | Start at a specific time | No (`startTime` is ignored on `/embed`) |
 | Q&A overlay | Yes (use `/embedqna`) |
 | Custom styling | Limited (container only) |
@@ -740,7 +782,7 @@ If you are the owner of the video:
 3. Select **Embed** in the share modal
 4. Copy the provided iframe code directly — it's ready to paste into your website
 
-The embed code includes your video's unique ID and recommended settings. You can customize the `width` and `height` attributes as needed. The code's link ends in `&ap=true`, which turns autoplay on. Delete it if the video should wait for a click (see [Turning Autoplay Off](#turning-autoplay-off)). On Wix, use the [Wix-ready embed code](#wix) and copy only the link from the share dialog.
+The embed code includes your video's unique ID and recommended settings, including `referrerpolicy` so analytics can show which page the video was watched on. You can customize the `width` and `height` attributes as needed. The code's link ends in `&ap=true`, which turns autoplay on. Delete it if the video should wait for a click (see [Turning Autoplay Off](#turning-autoplay-off)). On Wix, use the [Wix-ready embed code](#wix) and copy only the link from the share dialog.
 
 ### Finding the Video ID Manually
 
@@ -768,6 +810,7 @@ The Q&A-only embed (`/embedqna`) displays just the interactive Q&A interface ass
   src="https://qvio.hia.ai/embedqna?v=YOUR_VIDEO_ID"
   allow="microphone;autoplay;fullscreen"
   allowtransparency="true"
+  referrerpolicy="no-referrer-when-downgrade"
   width="400"
   height="600"
 ></iframe>
@@ -778,6 +821,7 @@ The Q&A-only embed (`/embedqna`) displays just the interactive Q&A interface ass
 | Parameter | Required | Values         | Description                          |
 | --------- | -------- | -------------- | ------------------------------------ |
 | `v`       | Yes      | Short video ID | The unique identifier for your video |
+| `pageUrl` | No       | URL-encoded page address | The address of the page the embed is on, for analytics. See [Where Your Embeds Are Viewed](#where-your-embeds-are-viewed) |
 
 ### Sizing Recommendations for Q&A Embed
 
