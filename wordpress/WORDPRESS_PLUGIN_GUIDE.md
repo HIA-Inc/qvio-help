@@ -333,6 +333,25 @@ When autoplay is enabled:
 - If blocked, a play button appears for manual start
 - Works reliably when users have previously interacted with your site
 
+### Page Address in Analytics
+
+From version 1.4.0, the plugin adds the address of the page each embed is on (without its query string) as the `pageUrl` parameter. Qvio's analytics use it to show which page each video was watched on. See [Where Your Embeds Are Viewed](../embedding/EMBEDDING_QVIO_GUIDE.md#where-your-embeds-are-viewed).
+
+- **Plain permalinks** (`?p=123`): no address is sent, except on the front page, because WordPress gives every page the same path.
+- **To stop sending it**, add this to your theme's `functions.php` or a small plugin:
+
+  ```php
+  add_filter( 'qvio_embed_page_url', '__return_empty_string' );
+  ```
+
+- **To change it**, for example to drop path segments that name people, filter the address and return the version you want sent:
+
+  ```php
+  add_filter( 'qvio_embed_page_url', function ( $url ) {
+      return preg_replace( '#/author/[^/]+/#', '/author/', $url );
+  } );
+  ```
+
 ---
 
 ## Finding Your Video ID

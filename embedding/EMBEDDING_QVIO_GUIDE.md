@@ -635,16 +635,20 @@ By default, browsers tell an embedded iframe only the domain of the site hosting
 
 - **Add `referrerpolicy="no-referrer-when-downgrade"` to the iframe.** Embed code copied from Qvio's share dialog already includes it. It works when your page and Qvio both use HTTPS. Embed code copied before this attribute was added reports the domain only until you replace it.
 - **Pass the page in the embed URL with `pageUrl`.** Use the page's full address, URL-encoded: `&pageUrl=https%3A%2F%2Fwww.example.com%2Flearn%2Fonboarding%2F`. This also works where the browser reports nothing, for example in apps that show web content.
-- **WordPress:** the [Qvio Embed plugin](../wordpress/WORDPRESS_PLUGIN_GUIDE.md) adds `pageUrl` automatically from version 1.4.0, for the Qvio Video block, the Floating Button block and the `[qvio]` shortcode.
+- **WordPress:** the [Qvio Embed plugin](../wordpress/WORDPRESS_PLUGIN_GUIDE.md) adds `pageUrl` automatically from version 1.4.0, for the Qvio Video block, the Floating Button block and the `[qvio]` shortcode. Site owners can change or stop it with the `qvio_embed_page_url` filter (see [Page Address in Analytics](../wordpress/WORDPRESS_PLUGIN_GUIDE.md#page-address-in-analytics)).
 
 Site builders that put your code inside their own frame (such as [Wix](#wix)) report the builder's address rather than your page. Sites that send a `Referrer-Policy: no-referrer` header report nothing. In both cases, add `pageUrl` to report your page.
 
 ### What Qvio Keeps
 
-- **The site and the page path only.** The query string (everything after `?`) and anything after `#` are removed before anything is sent to Qvio.
+- **The site and the page path only.** The query string (everything after `?`) and anything after `#` are removed before the view is recorded. With `referrerpolicy` set, the browser includes the full address when it loads the embed, but Qvio doesn't store or log it.
 - **Identifier-like path segments are hidden.** Segments that look like identifiers, such as numbers of four or more digits, email addresses and long codes, are replaced with `:id`. For example, `/patients/12345/education` is kept as `/patients/:id/education`. Analytics list these pages but don't link to them.
 - Qvio can't recognise every identifier (a person's name in a page address, for example). Avoid putting personal information in the addresses of pages that embed Qvio videos.
 - Views recorded before this reporting was added have no site.
+
+### Keeping Page Addresses Private
+
+The `referrerpolicy` attribute overrides a stricter referrer policy set by your site. If your site keeps its page addresses private, delete the attribute from the embed code. Views then show your domain only, with the page listed as **Page not shared**. Don't add `pageUrl` either. On WordPress, use the plugin's `qvio_embed_page_url` filter (see [Page Address in Analytics](../wordpress/WORDPRESS_PLUGIN_GUIDE.md#page-address-in-analytics)).
 
 ---
 
